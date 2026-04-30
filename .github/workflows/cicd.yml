@@ -50,6 +50,7 @@ jobs:
 
       # 3. Maven 빌드
       - name: Build with Maven
+        working-directory: cicd-basic-lab
         run: mvn clean package -DskipTests -B
 
       # 4. OIDC 인증
@@ -57,7 +58,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/github-actions-cicd-basic-lab-role
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-cicd-basic-lab-role
           aws-region: ${{ env.AWS_REGION }}
           role-session-name: GitHubActions-CI-${{ github.run_id }}
 
@@ -72,6 +73,7 @@ jobs:
       #    현재:  {계정ID}.dkr.ecr.../mylab-backend:{run_number}-{sha7}
       - name: Build, tag and push image to ECR
         id: build-push
+        working-directory: cicd-basic-lab
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
